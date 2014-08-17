@@ -1,0 +1,7 @@
+name: Kordam
+description: Kordam
+dependencies:
+  browser: any
+  express: 0.1.6
+  yaml: 1.1.1
+  logging: ">=0.9.1+1 <0.10.0"

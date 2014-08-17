@@ -1,0 +1,32 @@
+part of controllers;
+
+class Response {
+  var _data;
+  int _statusCode = 200;
+  get statusCode => _statusCode;
+
+  /**
+   * Create a response to be sent to the client containing tthe given data and status code.
+   * By default the status code is 200
+   */
+  Response(this._data, {int statusCode}) {
+    if (statusCode is int)
+      _statusCode = statusCode;
+  }
+
+  /**
+   *  Uniformise the response and return a Map containing the results
+   */
+  Map formatResponse() {
+    Map results = new Map();
+    if (_statusCode == 200) {
+      results["results"] = _data;
+      results["status"] = "ok";
+    } else {
+      results["results"] = {"error": _data};
+      results["status"] = "ko";
+    }
+    return  results;
+  }
+
+}

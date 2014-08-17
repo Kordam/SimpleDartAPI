@@ -1,0 +1,24 @@
+#
+# USER
+#
+
+user_create:
+  route: /user/create
+  method: PUT
+  action: User:create
+
+user_get:
+  route: /user/:userId/get
+  method: GET
+  action: User:get
+
+user_edit:
+  route: /user/:userId/edit
+  method: POST
+  action: User:edit
+  needConnection: true
+
+user_delete:
+  route: /user/:userId/delete
+  method: DELETE
+  action: User:delete
