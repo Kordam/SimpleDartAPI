@@ -165,4 +165,4 @@ Response response = new Response("Not found", statusCode: 404);
 ```
 
 The first parameter is the data sent back from the API. You can use any type of data (String, List, Map, int, etc...), the Response class will transform it to *JSON* to make it more easily usable for the client part.
-The second parameter is optional and correspond to the status code sent by the API. By default it is set to 200.
+The second parameter is optional and corresponds to the status code sent by the API. By default it is set to 200.
