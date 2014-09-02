@@ -1,7 +1,8 @@
-name: Kordam
-description: Kordam
+name: simple_dart_api
+version: 0.0.1
+description: Simple dart api for Kordam
 dependencies:
   browser: any
-  express: 0.1.6
+  logging: '>=0.9.1+1 <0.10.0'
+  route: any
   yaml: 1.1.1
-  logging: ">=0.9.1+1 <0.10.0"

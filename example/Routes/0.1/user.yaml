@@ -8,17 +8,17 @@ user_create:
   action: User:create
 
 user_get:
-  route: /user/:userId/get
+  route: /user/(\d+)/get
   method: GET
   action: User:get
 
 user_edit:
-  route: /user/:userId/edit
+  route: /user/(\d+)/edit
   method: POST
   action: User:edit
   needConnection: true
 
 user_delete:
-  route: /user/:userId/delete
+  route: /user/(\d+)/delete
   method: DELETE
   action: User:delete

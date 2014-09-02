@@ -1,15 +1,15 @@
-part of router;
+part of SimpleDartApi;
 
 class Route {
   String name = "";
   List<String> methods = [];
-  String url = "";
+  UrlPattern url;
   String version = "";
   bool needConnection = false;
   InstanceMirror classe;
   String function = "";
+  Function handler;
 
   Route(this.version, {String name, String methods, String url, InstanceMirror classe}) {
-
   }
 }
