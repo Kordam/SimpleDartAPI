@@ -2,21 +2,30 @@ part of SimpleDartApi;
 
 class SimpleDartApi {
 
+  String                      _libraryName;
   String                      _routingDir = null;
   Map<String, InstanceMirror> _classes = {};
   Log.Logger                  _logger = new Log.Logger("Routeur");
-  List<Route>                 _routes = new List<Route>();  
-  
+  List<Route>                 _routes = new List<Route>();
+  Middleware                  middleware = new Middleware();
+
   /**
    * Router's contructor
    * Take the path to the routes directory as pathToRoot
    */
-  SimpleDartApi (String pathToRoute) {
+  SimpleDartApi (String pathToRoute, {libraryName: "controllers"}) {
     _routingDir = pathToRoute;
+    _libraryName = libraryName;
+    initLogger();
+    SplayTreeMap<String, Map> versions = _getVersion();
+    _initRoutes(versions);
+  }
+
+  void initLogger() {
     final logDir = new Directory(Directory.current.path + '/logs/');
     logDir.exists().then((isThere) {
-      if (!isThere)
-        new Directory(Directory.current.path + '/logs/').create(recursive: true);
+      if (isThere == false)
+        new Directory(Directory.current.path + '/logs/').createSync(recursive: true);
     });
     Log.Logger.root.level = Log.Level.ALL;
     Log.Logger.root.onRecord.listen((Log.LogRecord rec) {
@@ -26,8 +35,6 @@ class SimpleDartApi {
         new File (Directory.current.path + "/logs/warning.log").writeAsString('${rec.message}\r\n', mode: FileMode.APPEND);
       }
     });
-    SplayTreeMap<String, Map> versions = _getVersion();
-    _initRoutes(versions);
   }
 
   /**
@@ -41,7 +48,7 @@ class SimpleDartApi {
     new Directory(_routingDir).listSync(recursive: true, followLinks: false)
     .forEach((FileSystemEntity entity) {
       if (entity is Link) {
-        return;  
+        return;
       }
       if(entity.path.contains(".yaml")) {
         roads += new File (entity.path).readAsStringSync();
@@ -102,15 +109,22 @@ class SimpleDartApi {
             _classes[functions[0]]  = _createClass(functions[0]);
       route.classe = _classes[functions[0]];
       route.function = functions[1];
-      
+
       route.handler = (HttpRequest req) {
-        List args = new List();
-        args.add(req);
-        args.addAll(route.url.parse(req.uri.path));
-        route.classe.invoke(new Symbol(route.function), args).reflectee;
+        var response = middleware.execute(req, route);
+        if (response == true) {
+          List args = new List();
+          args.add(req);
+          args.addAll(route.url.parse(req.uri.path));
+          response = route.classe.invoke(new Symbol(route.function), args).reflectee;
+        }
+        req.response.statusCode = (response as Response).statusCode;
+        req.response.write((response as Response).formatResponse());
+        _logRequest(req);
         req.response.close();
+
       };
-      
+
       return route;
   }
 
@@ -131,14 +145,14 @@ class SimpleDartApi {
     mirrors.libraries.values.forEach((LibraryMirror e) {
       print(e.simpleName.toString());
     });
-    
+
     LibraryMirror lm = mirrors.libraries.values.firstWhere(
-       (LibraryMirror lm) => lm.qualifiedName == new Symbol('controllers'));
+       (LibraryMirror lm) => lm.qualifiedName == new Symbol(_libraryName));
       ClassMirror cm = lm.declarations[new Symbol(className + "Controller")];
       InstanceMirror im = cm.newInstance(new Symbol(''), []);
       return im;
   }
-  
+
   /**
    *  Launches the router on the given [host] and [port]
    */
@@ -153,6 +167,18 @@ class SimpleDartApi {
       }
       router.defaultStream.listen(send404);
     });
+  }
+
+  /**
+     * Logs a request [ctx]
+     */
+  void _logRequest(HttpRequest ctx) {
+    if (ctx.response.statusCode > 400) {
+      _logger.warning('"${ctx.method} ${ctx.requestedUri.path}" ${ctx.response.statusCode.toString()} - ${ctx.response.reasonPhrase}');
+    } else {
+      _logger.info("${ctx.connectionInfo.remoteAddress.address} - \"${ctx.method} ${ctx.requestedUri.path}\"  ${ctx.response.statusCode.toString()}"
+""" \"${ctx.headers.host}\" \"${ctx.headers.value("user-agent")}\" """);
+   }
   }
 
 }

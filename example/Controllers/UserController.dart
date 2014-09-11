@@ -1,22 +1,24 @@
 part of controllers;
 
 class UserController {
-    /**
-     * Create a user by the information contained in [params]
-     */
-    void create(HttpRequest req, String id) {
-      req.response.write(id);
+
+    Response create(HttpRequest req, String name) {
+      // create the user ...
+      return new Response({'msg': "create a user", 'id': name});
     }
 
-    void get(HttpRequest req, String id) {
-      req.response.write(id);
+    Response get(HttpRequest req, String id) {
+      // get the user ...
+      return new Response({'msg': "get a user", 'id': id});
     }
 
-    void edit(HttpRequest req, String id) {
-      req.response.write(id);
+    Response edit(HttpRequest req, String id) {
+      // edit the user ...
+      return new Response({'msg': "edit a user", 'id': id});
     }
 
-    void delete(HttpRequest req, String id) {
-      req.response.write(id);
+    Response delete(HttpRequest req, String id) {
+      // delete the user ...
+      return new Response({'msg': "delete a user", 'id': id});
     }
 }

@@ -14,3 +14,4 @@ import 'package:route/server.dart';
 part 'src/simple_dart_api.dart';
 part 'src/Route.dart';
 part 'src/Response.dart';
+part 'src/Middleware.dart';

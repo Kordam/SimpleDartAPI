@@ -1,7 +1,6 @@
-# DonÎéÎ÷t commit the following directories created by pub.
+# Donï¿½ï¿½t commit the following directories created by pub.
 build/
-packages/
-.buildlog
+packages
 
 # Or the files created by dart2js.
 *.dart.js
@@ -13,4 +12,9 @@ packages/
 # Include when developing application packages.
 pubspec.lock
 
-example/logs/*
+.project
+*.iml
+*.ipr
+*.iws
+.idea/
+/nbproject/private/
