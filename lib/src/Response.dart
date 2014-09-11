@@ -1,4 +1,4 @@
-part of controllers;
+part of SimpleDartApi;
 
 class Response {
   var _data;
@@ -20,10 +20,10 @@ class Response {
   Map formatResponse() {
     Map results = new Map();
     if (_statusCode == 200) {
-      results["results"] = _data;
+      results["data"] = _data;
       results["status"] = "ok";
     } else {
-      results["results"] = {"error": _data};
+      results["data"] = {"error": _data};
       results["status"] = "ko";
     }
     return  results;

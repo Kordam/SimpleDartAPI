@@ -1,4 +1,4 @@
-part of router;
+part of SimpleDartApi;
 
 class Middleware {
 
@@ -9,7 +9,7 @@ class Middleware {
    * Execute the middleware before each request return false if everything is good,
    * or return the good Response.
    */
-  execute(HttpContext ctx, Route route){
+  execute(HttpRequest req, Route route){
     return false;
   }
 
