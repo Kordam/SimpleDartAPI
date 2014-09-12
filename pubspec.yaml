@@ -1,6 +1,8 @@
 name: simple_dart_api
 version: 0.0.1
-description: Simple dart api for Kordam
+description: SimpleDartAPI is a Dart Framework that will allow you to easily create your own API in Dart.
+author: Corentin Pillet
+homepage: https://github.com/Kordam/SimpleDartAPI
 dependencies:
   browser: any
   logging: '>=0.9.1+1 <0.10.0'
