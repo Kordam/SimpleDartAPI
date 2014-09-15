@@ -5,7 +5,12 @@ class MyMiddleware extends Middleware  {
 
   @override
   execute(HttpRequest req, Route route){
-    return new Response("Bad request", statusCode:  400);
+    /*
+     * You can return either true to continue or the appropriate Response
+     *
+     * return new Response("Bad request", statusCode:  400);
+     */
+    return true;
   }
 
 }
