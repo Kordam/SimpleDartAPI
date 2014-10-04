@@ -2,16 +2,20 @@ part of SimpleDartApi;
 
 class Response {
   var _data;
+  Map<String, Object> _headers = new Map<String, Object>();
+  Map<String, Object> get headers => _headers;
   int _statusCode = 200;
-  get statusCode => _statusCode;
+  int get statusCode => _statusCode;
 
   /**
    * Create a response to be sent to the client containing tthe given data and status code.
    * By default the status code is 200
    */
-  Response(this._data, {int statusCode}) {
+  Response(this._data, {int statusCode, Map<String, Object> headers}) {
     if (statusCode is int)
       _statusCode = statusCode;
+    if (headers is Map<String, Object>)
+      _headers = headers;
   }
 
   /**

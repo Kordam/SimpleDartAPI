@@ -9,7 +9,8 @@ class UserController {
 
     Response get(HttpRequest req, String id) {
       // get the user ...
-      return new Response({'msg': "get a user", 'id': id});
+      var headers = {'Access-Control-Allow-Origin': '*'};
+      return new Response({'msg': "get a user", 'id': id}, headers: headers);
     }
 
     Response edit(HttpRequest req, String id) {

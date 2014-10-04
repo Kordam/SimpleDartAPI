@@ -118,6 +118,10 @@ class SimpleDartApi {
           args.addAll(route.url.parse(req.uri.path));
           response = route.classe.invoke(new Symbol(route.function), args).reflectee;
         }
+        Map<String, Object> headers = (response as Response).headers;
+        headers.forEach((String name, Object value) {
+          req.response.headers.add(name, value);
+        });
         req.response.statusCode = (response as Response).statusCode;
         req.response.write((response as Response).formatResponse());
         _logRequest(req);
