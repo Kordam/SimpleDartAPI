@@ -18,3 +18,5 @@ pubspec.lock
 *.iws
 .idea/
 /nbproject/private/
+
+example/logs/*.log
