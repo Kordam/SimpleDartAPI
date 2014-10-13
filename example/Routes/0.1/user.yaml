@@ -6,11 +6,13 @@ user_create:
   route: /user/create
   method: PUT
   action: User:create
+  options: true
 
 user_get:
   route: /user/(\d+)/get
   method: GET
   action: User:get
+  options: true
 
 user_edit:
   route: /user/(\d+)/edit

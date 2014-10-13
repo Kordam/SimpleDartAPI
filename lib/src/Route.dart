@@ -9,6 +9,7 @@ class Route {
   InstanceMirror classe;
   String function = "";
   Function handler;
+  bool options = false;
 
   Route(this.version, {String name, String methods, String url, InstanceMirror classe}) {
   }

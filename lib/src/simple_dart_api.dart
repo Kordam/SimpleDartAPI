@@ -78,7 +78,7 @@ class SimpleDartApi {
       if (current_roads != null) {
         current_roads.forEach((String routeName, Map info) {
           Route route = _getRouteInfo(version, routeName, info);
-          _createRoute(route);
+          _routes.add(route);
         });
       }
 
@@ -86,7 +86,7 @@ class SimpleDartApi {
         previous_routes.forEach((String routeName, Map info) {
           if (!current_roads.containsKey(routeName)) {
             Route route = _getRouteInfo(version, routeName, info);
-            _createRoute(route);
+            _routes.add(route);
           }
         });
       }
@@ -109,7 +109,9 @@ class SimpleDartApi {
             _classes[functions[0]]  = _createClass(functions[0]);
       route.classe = _classes[functions[0]];
       route.function = functions[1];
-
+      if (info.containsKey("options")) {
+        route.options = info["options"];
+      }
       route.handler = (HttpRequest req) {
         var response = middleware.execute(req, route);
         if (response == true) {
@@ -132,13 +134,6 @@ class SimpleDartApi {
       return route;
   }
 
-
-  /**
-   * Creates the route by [url] and crete them for each methods of the [route]
-   */
-  void _createRoute(Route route) {
-    _routes.add(route);
-  }
 
   /**
    * Creates dynamicaly a class by it's name.
@@ -169,8 +164,51 @@ class SimpleDartApi {
           router.serve(route.url, method: method).listen(route.handler);
         }
       }
-      router.defaultStream.listen(send404);
+      _addOptionsHandler(router, _routes);
+      router.defaultStream.listen(_defaultStream);
     });
+  }
+  
+  /**
+   * Create route for the method OPTIONS
+   */
+  void _addOptionsHandler(Router router, List<Route> routes) {
+    var map = new Map<UrlPattern, List<String>>();
+    for (Route route in routes) {
+      if (route.options) {
+        map.putIfAbsent(route.url, () => new List<String>());
+        map[route.url].addAll(route.methods);
+      }
+    }
+    map.forEach((url, final methods) {
+      router.serve(url, method: "OPTIONS").listen((req) {
+        print("OPTIONS");
+        req.response.statusCode = HttpStatus.NO_CONTENT;
+        var methodString = "";
+        for (var method in methods) {
+          if (methodString != "") {
+            methodString += ", ";
+          }
+          methodString += method; 
+        }
+        req.response.headers.add("Allow", methodString);
+        req.response.headers.add("Cache-Control", "no-cache");
+        req.response.close();
+      });
+    });
+  }
+  
+  /**
+   * Handle the defaultStream
+   */  
+  void _defaultStream(HttpRequest req) {
+    if (req.method.toUpperCase() == "OPTIONS") {
+      req.response.statusCode = HttpStatus.METHOD_NOT_ALLOWED;
+      req.response.write("Not Allowed");
+      req.response.close();
+    } else {
+      send404(req);
+    }
   }
 
   /**
