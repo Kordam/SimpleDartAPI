@@ -125,7 +125,7 @@ class SimpleDartApi {
           req.response.headers.add(name, value);
         });
         req.response.statusCode = (response as Response).statusCode;
-        req.response.write((response as Response).formatResponse());
+        req.response.write(JSON.encode((response as Response).formatResponse()));
         _logRequest(req);
         req.response.close();
 

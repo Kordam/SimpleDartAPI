@@ -3,6 +3,7 @@ library SimpleDartApi;
 import "dart:io";
 import "dart:mirrors";
 import "dart:collection";
+import "dart:convert" show JSON;
 import 'package:logging/logging.dart' as Log;
 import "package:yaml/yaml.dart";
 import 'package:route/server.dart';
