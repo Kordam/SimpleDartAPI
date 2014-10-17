@@ -6,7 +6,8 @@ import 'Controllers/ControllersLibrary.dart';
 import 'Utility/MyMiddleware.dart';
 
 main() {
-  var router = new SimpleDartApi(Directory.current.path + "/Routes/");
+  var headers = {'Access-Control-Allow-Origin': '*'};
+  var router = new SimpleDartApi(Directory.current.path + "/Routes/", defaultHeaders: headers);
   router.middleware = new MyMiddleware();
   router.launch("127.0.0.1", 8001);
 }

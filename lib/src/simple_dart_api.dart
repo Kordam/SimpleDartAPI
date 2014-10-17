@@ -4,6 +4,7 @@ class SimpleDartApi {
 
   String                      _libraryName;
   String                      _routingDir = null;
+  Map<String, String>         _defaultHeaders = new Map<String, String>();
   Map<String, InstanceMirror> _classes = {};
   Log.Logger                  _logger = new Log.Logger("Routeur");
   List<Route>                 _routes = new List<Route>();
@@ -13,9 +14,11 @@ class SimpleDartApi {
    * Router's contructor
    * Take the path to the routes directory as pathToRoot
    */
-  SimpleDartApi (String pathToRoute, {libraryName: "controllers"}) {
+  SimpleDartApi (String pathToRoute, {libraryName: "controllers", defaultHeaders}) {
     _routingDir = pathToRoute;
     _libraryName = libraryName;
+    if (defaultHeaders != null && defaultHeaders is Map<String, String>)
+      _defaultHeaders = defaultHeaders;
     initLogger();
     SplayTreeMap<String, Map> versions = _getVersion();
     _initRoutes(versions);
@@ -120,6 +123,9 @@ class SimpleDartApi {
           args.addAll(route.url.parse(req.uri.path));
           response = route.classe.invoke(new Symbol(route.function), args).reflectee;
         }
+        _defaultHeaders.forEach((String name, Object value) {
+          req.response.headers.add(name, value);
+        });
         Map<String, Object> headers = (response as Response).headers;
         headers.forEach((String name, Object value) {
           req.response.headers.add(name, value);
@@ -168,7 +174,7 @@ class SimpleDartApi {
       router.defaultStream.listen(_defaultStream);
     });
   }
-  
+
   /**
    * Create route for the method OPTIONS
    */
@@ -182,25 +188,27 @@ class SimpleDartApi {
     }
     map.forEach((url, final methods) {
       router.serve(url, method: "OPTIONS").listen((req) {
-        print("OPTIONS");
         req.response.statusCode = HttpStatus.NO_CONTENT;
         var methodString = "";
         for (var method in methods) {
           if (methodString != "") {
             methodString += ", ";
           }
-          methodString += method; 
+          methodString += method;
         }
-        req.response.headers.add("Allow", methodString);
+        _defaultHeaders.forEach((String name, Object value) {
+          req.response.headers.add(name, value);
+        });
+        req.response.headers.add("Access-Control-Allow-Methods", methodString);
         req.response.headers.add("Cache-Control", "no-cache");
         req.response.close();
       });
     });
   }
-  
+
   /**
    * Handle the defaultStream
-   */  
+   */
   void _defaultStream(HttpRequest req) {
     if (req.method.toUpperCase() == "OPTIONS") {
       req.response.statusCode = HttpStatus.METHOD_NOT_ALLOWED;
