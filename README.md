@@ -13,7 +13,7 @@ To install SimpleDartAPI you can either download this git repository :
 Or simply by adding this lign to your pubsec.yaml file :
 
 ```
-simple_dart_api: 0.0.2
+simple_dart_api: 0.0.3
 ```
 And launching the command `pub get`
 
@@ -85,6 +85,7 @@ user_create:
   route: /user/create
   method: PUT
   action: User:create
+  options: true
 
 user_get:
   route: /user/(\d+)/get
@@ -103,7 +104,7 @@ user_delete:
   action: User:delete
 ```
 
-This syntax is composed of 5 parts:
+This syntax is composed of 6 parts:
 
 1. **The route name (`user_create`)**: This name must be unique. It is the identifier of the route itself and is used in case of multiple versions to automatically create the road for the higher version.
 
@@ -119,6 +120,7 @@ You can define multiple types of methods by separating them with the character *
 
 5. ** The need of connection (`needConnection: true`)**: Allows you to specify if the road needs an identification to be accessed. You might need it to disallow pages in the *Middleware*. Default value is `false`.
 
+6. **The handling of the OPTIONS requests (`options: true`)**: Allow you to specify if the route needs to answer the OPTIONS request or not.
 
 Now that we have our routes set up we only need to create the controllers for these routes.
 
@@ -141,13 +143,15 @@ The function must return a response object containing the data of the answer.
 ## Responses
 
 In order to standardise the responses from the API a **Response** class has been created. This class is created from a dataset and a status code.
+You also have the possibility to use your own custom headers by specifying them in the contructor.
 
 ```dart
-Response response = new Response("Not found", statusCode: 404);
+Response response = new Response("Not found", statusCode: 404, headers: {'Access-Control-Allow-Origin': '*'});
 ```
 
 The first parameter is the data sent back from the API. You can use any type of data (String, List, Map, int, etc...), the Response class will transform it to *JSON* to make it more easily usable for the client part.
 The second parameter is optional and corresponds to the status code sent by the API. By default it is set to 200.
+The last one is also optional and is the headers of the response, it must be a Map of String.
 
 # Other functionalities
 

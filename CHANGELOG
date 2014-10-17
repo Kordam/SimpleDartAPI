@@ -1,3 +1,7 @@
+# 0.0.3
+* Handling the OPTIONS requests
+* Formatting Responses in proper JSON
+
 # 0.0.2
 * Response Header modification via the Response object
 
