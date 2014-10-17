@@ -13,7 +13,7 @@ To install SimpleDartAPI you can either download this git repository :
 Or simply by adding this lign to your pubsec.yaml file :
 
 ```
-simple_dart_api: 0.0.3
+simple_dart_api: 0.0.4
 ```
 And launching the command `pub get`
 

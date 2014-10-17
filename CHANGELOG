@@ -1,3 +1,7 @@
+# 0.0.4
+* Better handling of the OPTIONS requests
+* Posibility to add global headers
+
 # 0.0.3
 * Handling the OPTIONS requests
 * Formatting Responses in proper JSON
