@@ -123,23 +123,46 @@ class SimpleDartApi {
           args.addAll(route.url.parse(req.uri.path));
           response = route.classe.invoke(new Symbol(route.function), args).reflectee;
         }
-        _defaultHeaders.forEach((String name, Object value) {
-          req.response.headers.add(name, value);
-        });
-        Map<String, Object> headers = (response as Response).headers;
-        headers.forEach((String name, Object value) {
-          req.response.headers.add(name, value);
-        });
-        req.response.statusCode = (response as Response).statusCode;
-        req.response.write(JSON.encode((response as Response).formatResponse()));
-        _logRequest(req);
-        req.response.close();
-
+        _getReponse(response, req);
       };
-
       return route;
   }
 
+  /**
+   * Get the response sent from the controller
+   */
+  void _getReponse(response, HttpRequest req) {
+    if (response is Response) {
+      _sendResponse(response,req);
+    } else if (response is Future<Response>) {
+      (response as Future<Response>).then((rep) {
+        if (response is Response) {
+          _sendResponse(rep, req);
+        } else {
+          _sendResponse(new Response(rep), req);
+        }
+      });
+    } else {
+      _sendResponse(new Response(response), req);
+    }
+  }
+
+  /**
+   * Send the response
+   */
+  void _sendResponse(Response response, HttpRequest req) {
+    _defaultHeaders.forEach((String name, Object value) {
+      req.response.headers.add(name, value);
+    });
+    Map<String, Object> headers = response.headers;
+    headers.forEach((String name, Object value) {
+      req.response.headers.add(name, value);
+    });
+    req.response.statusCode = response.statusCode;
+    req.response.write(JSON.encode(response.formatResponse()));
+    _logRequest(req);
+    req.response.close();
+  }
 
   /**
    * Creates dynamicaly a class by it's name.

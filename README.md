@@ -138,7 +138,11 @@ Response create(HttpRequest req, String name) {
 ```
 Those function firstly take the Request itself as a parameter which contains all the information of the sent request.
 Secondly it take the series of parameter of the Request such as the GET and POST parameters. Those parameters are positioned in the same order as defined in the route file for the GET ones or in the request for the others.
-The function must return a response object containing the data of the answer.
+
+Those functions return either :
+* A Response object with the data, status code and headers
+* A Future containing either a Response or raw data that will then be transform in a Response object
+* Raw data that will then be transform in a Response object
 
 ## Responses
 

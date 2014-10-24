@@ -13,6 +13,15 @@ class UserController {
       return new Response({'msg': "get a user", 'id': id}, headers: headers);
     }
 
+    Future<Response> futureget(HttpRequest req, String id) {
+      Completer completer = new Completer();
+      Future future = new File("example.txt").readAsString();
+      future.then((content) {
+        completer.complete(content);
+      });
+      return completer.future;
+    }
+
     Response edit(HttpRequest req, String id) {
       // edit the user ...
       return new Response({'msg': "edit a user", 'id': id});

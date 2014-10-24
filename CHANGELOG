@@ -1,3 +1,8 @@
+# 0.0.5
+* Fix of the default Middleware
+* Adding the possibility to use Future as a return value in Controller to create async API
+* Adding the possibility to use any kind of value as a return value in Controller that will be converted in Response
+
 # 0.0.4
 * Better handling of the OPTIONS requests
 * Posibility to add global headers

@@ -14,6 +14,12 @@ user_get:
   action: User:get
   options: true
 
+user_future_get:
+  route: /user/(\d+)/futureget
+  method: GET
+  action: User:futureget
+  options: true
+
 user_edit:
   route: /user/(\d+)/edit
   method: POST

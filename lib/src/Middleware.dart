@@ -10,7 +10,7 @@ class Middleware {
    * or return the good Response.
    */
   execute(HttpRequest req, Route route){
-    return false;
+    return true;
   }
 
 }
