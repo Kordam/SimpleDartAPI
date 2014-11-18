@@ -162,25 +162,27 @@ The last one is also optional and is the headers of the response, it must be a M
 ## Middleware
 
 SimpleDartAPI's Router has a MiddleWare functionality that allows you to execute a function before each request.
-To use the Middleware of the SmpleDartAPI you need to create your own class and extend it from the class `Middleware` of the SimpleDartAPI and override the method execute of that class. Then you simply have to create an instance of your class and set the attribute of the SimpleDartAPI class.
+To use the Middleware of the SmpleDartAPI you need to create your own class and implement it from the class `MiddlewareController` of the SimpleDartAPI and override the method execute of that class. Then you simply have to create an instance of your class and set the attribute of the SimpleDartAPI class.
 
 Here's what your Middleware class should look like
 ```
 import 'dart:io';
 import 'package:simple_dart_api/simple_dart_api.dart';
 
-class MyMiddleware extends Middleware  {
+class MyMiddleware implements MiddlewareController {
 
   @override
-  execute(HttpRequest req, Route route){
-    return new Response("Bad request", statusCode:  400);
+  Future execute(HttpRequest req, Route route){
+    if ((new Date()).millisecondsSinceEpoch % 42 != 0)
+      throw new Response("It's not a good time to ask a question !", statusCode: 403);
+    return Future.wait([]);
   }
 
 }
 ```
 And simply add the functionality like so :
 ```
-router.middleware = new MyMiddleware();
+router.middlewares.add(new MyMiddleware());
 ```
 
 The function *execute* takes two parameters, the context containing the Request itself and the Route information contained in the configuration file.
