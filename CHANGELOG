@@ -1,3 +1,10 @@
+# 0.0.6
+* Date: 2014-12-18
+* Update of the Middleware API
+* Middleware now return Future
+* Exception can be thrown in Middleware
+* Provide examples for new the Middleware API
+
 # 0.0.5
 * Fix of the default Middleware
 * Adding the possibility to use Future as a return value in Controller to create async API
