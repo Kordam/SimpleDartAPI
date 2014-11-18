@@ -1,5 +1,5 @@
 name: simple_dart_api
-version: 0.0.5
+version: 0.0.6
 author: Corentin Pillet <contact@corentin-pillet.com>
 description: SimpleDartAPI is a Dart Framework that will allow you to easily create your own API in Dart.
 homepage: https://github.com/Kordam/SimpleDartAPI
