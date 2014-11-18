@@ -8,7 +8,7 @@ class SimpleDartApi {
   Map<String, InstanceMirror> _classes = {};
   Log.Logger                  _logger = new Log.Logger("Routeur");
   List<Route>                 _routes = new List<Route>();
-  Middleware                  middleware = new Middleware();
+  List<MiddlewareController>  middlewares = new List<MiddlewareController>();
 
   /**
    * Router's contructor
@@ -116,16 +116,29 @@ class SimpleDartApi {
         route.options = info["options"];
       }
       route.handler = (HttpRequest req) {
-        var response = middleware.execute(req, route);
-        if (response == true) {
-          List args = new List();
-          args.add(req);
-          args.addAll(route.url.parse(req.uri.path));
-          response = route.classe.invoke(new Symbol(route.function), args).reflectee;
-        }
-        _getReponse(response, req);
+        Future response = _executeAllMiddlewares(req, route)
+          .then( (_) {
+            List args = new List();
+            args.add(req);
+            args.addAll(route.url.parse(req.uri.path));
+            var res = route.classe.invoke(new Symbol(route.function), args).reflectee;
+            _getReponse(res, req);  
+          }).catchError( (res) {
+            print(res);
+            _getReponse(res, req);
+          });
       };
       return route;
+  }
+  
+  Future _executeAllMiddlewares(HttpRequest req, Route route) {
+    Completer completer = new Completer();
+    Future fut = Future.wait([]);
+    
+    for (var i = 0; i < middlewares.length; ++i)
+      fut = fut.then( (_) { middlewares[i].execute(req, route); } );
+
+    return fut;
   }
 
   /**
@@ -224,6 +237,7 @@ class SimpleDartApi {
         });
         req.response.headers.add("Access-Control-Allow-Methods", methodString);
         req.response.headers.add("Cache-Control", "no-cache");
+        req.response.headers.add("X-Dart-Framework", "SimpleDartApi");
         req.response.close();
       });
     });
