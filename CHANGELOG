@@ -1,3 +1,9 @@
+# 0.0.7
+* Date: 2014-12-19
+* Add HttpServer attribute to the main class
+* 		-> needed to set the session timeout
+* Add try/catch to the JSON.encode of the response
+
 # 0.0.6
 * Date: 2014-12-18
 * Update of the Middleware API

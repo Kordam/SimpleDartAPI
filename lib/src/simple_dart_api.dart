@@ -9,6 +9,7 @@ class SimpleDartApi {
   Log.Logger                  _logger = new Log.Logger("Routeur");
   List<Route>                 _routes = new List<Route>();
   List<MiddlewareController>  middlewares = new List<MiddlewareController>();
+  HttpServer                  httpServer = null;
 
   /**
    * Router's contructor
@@ -172,7 +173,11 @@ class SimpleDartApi {
       req.response.headers.add(name, value);
     });
     req.response.statusCode = response.statusCode;
-    req.response.write(JSON.encode(response.formatResponse()));
+    try {
+      req.response.write(JSON.encode(response.formatResponse()));
+    } catch (err) {
+      req.response.write('{"error": "server error"}');
+    }
     _logRequest(req);
     req.response.close();
   }
@@ -199,6 +204,7 @@ class SimpleDartApi {
    */
   void launch(String host, int port) {
     HttpServer.bind(host, port).then((HttpServer server) {
+      httpServer = server;
       _logger.log(Log.Level.INFO, "listening on ${server.address}, port ${server.port}");
       var router = new Router(server);
       for (Route route in _routes) {
