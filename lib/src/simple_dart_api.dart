@@ -202,8 +202,8 @@ class SimpleDartApi {
   /**
    *  Launches the router on the given [host] and [port]
    */
-  void launch(String host, int port) {
-    HttpServer.bind(host, port).then((HttpServer server) {
+   Future launch(String host, int port) {
+   return HttpServer.bind(host, port).then((HttpServer server) {
       httpServer = server;
       _logger.log(Log.Level.INFO, "listening on ${server.address}, port ${server.port}");
       var router = new Router(server);
