@@ -176,7 +176,7 @@ class SimpleDartApi {
     try {
       req.response.write(JSON.encode(response.formatResponse()));
     } catch (err) {
-      req.response.write('{"error": "server error"}');
+      req.response.write(JSON.encode(new Response({"error": "server error"}, statusCode: 401).formatResponse()));
     }
     _logRequest(req);
     req.response.close();
