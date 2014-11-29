@@ -114,7 +114,7 @@ class SimpleDartApi {
       route.classe = _classes[functions[0]];
       route.function = functions[1];
       if (info.containsKey("options")) {
-        route.options = info["options"];
+        route.options = ((info["options"] is bool && info["options"] == true) || (info["options"] is String && info["options"] == "true")) ? true : false;
       }
       route.handler = (HttpRequest req) {
         Future response = _executeAllMiddlewares(req, route)
@@ -123,7 +123,7 @@ class SimpleDartApi {
             args.add(req);
             args.addAll(route.url.parse(req.uri.path));
             var res = route.classe.invoke(new Symbol(route.function), args).reflectee;
-            _getReponse(res, req);  
+            _getReponse(res, req);
           }).catchError( (res) {
             print(res);
             _getReponse(res, req);
@@ -131,11 +131,11 @@ class SimpleDartApi {
       };
       return route;
   }
-  
+
   Future _executeAllMiddlewares(HttpRequest req, Route route) {
     Completer completer = new Completer();
     Future fut = Future.wait([]);
-    
+
     for (var i = 0; i < middlewares.length; ++i)
       fut = fut.then( (_) { middlewares[i].execute(req, route); } );
 
