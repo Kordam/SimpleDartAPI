@@ -125,7 +125,6 @@ class SimpleDartApi {
             var res = route.classe.invoke(new Symbol(route.function), args).reflectee;
             _getReponse(res, req);
           }).catchError( (res) {
-            print(res);
             _getReponse(res, req);
           });
       };
@@ -173,11 +172,7 @@ class SimpleDartApi {
       req.response.headers.add(name, value);
     });
     req.response.statusCode = response.statusCode;
-    try {
-      req.response.write(JSON.encode(response.formatResponse()));
-    } catch (err) {
-      req.response.write(JSON.encode(new Response("server error", statusCode: 401).formatResponse()));
-    }
+    req.response.write(JSON.encode(response.formatResponse()));
     _logRequest(req);
     req.response.close();
   }
