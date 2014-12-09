@@ -147,13 +147,15 @@ class SimpleDartApi {
   void _getReponse(response, HttpRequest req) {
     if (response is Response) {
       _sendResponse(response,req);
-    } else if (response is Future<Response>) {
-      (response as Future<Response>).then((rep) {
-        if (response is Response) {
+    } else if (response is Future) {
+      (response as Future).then((rep) {
+        if (rep is Response) {
           _sendResponse(rep, req);
         } else {
           _sendResponse(new Response(rep), req);
         }
+      }).catchError((err) {
+        _sendResponse(new Response(err), req);
       });
     } else {
       _sendResponse(new Response(response), req);
