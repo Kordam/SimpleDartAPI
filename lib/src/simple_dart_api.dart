@@ -132,13 +132,7 @@ class SimpleDartApi {
   }
 
   Future _executeAllMiddlewares(HttpRequest req, Route route) {
-    Completer completer = new Completer();
-    Future fut = Future.wait([]);
-
-    for (var i = 0; i < middlewares.length; ++i)
-      fut = fut.then( (_) { middlewares[i].execute(req, route); } );
-
-    return fut;
+    return Future.forEach(middlewares, (m) { return m.execute(req, route); });
   }
 
   /**
