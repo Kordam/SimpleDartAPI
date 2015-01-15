@@ -168,7 +168,12 @@ class SimpleDartApi {
       req.response.headers.add(name, value);
     });
     req.response.statusCode = response.statusCode;
-    req.response.write(JSON.encode(response.formatResponse()));
+    try {
+    	req.response.write(JSON.encode(response.formatResponse()));
+    } catch (e) {
+        req.response.write(JSON.encode(new Response("Unkown error", statusCode: 401).formatResponse()));
+	print("Cannot encode json document : " + e);
+    }
     _logRequest(req);
     req.response.close();
   }
