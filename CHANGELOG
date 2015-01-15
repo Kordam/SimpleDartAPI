@@ -1,3 +1,11 @@
+# 0.1.6
+* Date: 2014-12-09
+* Add try/catch when response cannot be encode in JSON
+
+# 0.1.5
+* Date: 2014-12-09
+* Fixing middleware future error catch
+
 # 0.1.4
 * Date: 2014-12-09
 * Fixing how the Response is get

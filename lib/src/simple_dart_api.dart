@@ -132,13 +132,7 @@ class SimpleDartApi {
   }
 
   Future _executeAllMiddlewares(HttpRequest req, Route route) {
-    Completer completer = new Completer();
-    Future fut = Future.wait([]);
-
-    for (var i = 0; i < middlewares.length; ++i)
-      fut = fut.then( (_) { middlewares[i].execute(req, route); } );
-
-    return fut;
+    return Future.forEach(middlewares, (m) { return m.execute(req, route); });
   }
 
   /**
@@ -174,7 +168,12 @@ class SimpleDartApi {
       req.response.headers.add(name, value);
     });
     req.response.statusCode = response.statusCode;
-    req.response.write(JSON.encode(response.formatResponse()));
+    try {
+    	req.response.write(JSON.encode(response.formatResponse()));
+    } catch (e) {
+        req.response.write(JSON.encode(new Response("Unkown error", statusCode: 401).formatResponse()));
+	print("Cannot encode json document : " + e);
+    }
     _logRequest(req);
     req.response.close();
   }
