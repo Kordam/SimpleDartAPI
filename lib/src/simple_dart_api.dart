@@ -152,7 +152,7 @@ class SimpleDartApi {
         _sendResponse(new Response(err), req);
       });
     } else {
-      _sendResponse(new Response(response), req);
+      _sendResponse(new Response("A unkown error occured", statusCode: 500), req);
     }
   }
 
@@ -168,12 +168,7 @@ class SimpleDartApi {
       req.response.headers.add(name, value);
     });
     req.response.statusCode = response.statusCode;
-    try {
-    	req.response.write(JSON.encode(response.formatResponse()));
-    } catch (e) {
-        req.response.write(JSON.encode(new Response("Unkown error", statusCode: 401).formatResponse()));
-	print("Cannot encode json document : " + e);
-    }
+    req.response.write(JSON.encode(response.formatResponse()));
     _logRequest(req);
     req.response.close();
   }
